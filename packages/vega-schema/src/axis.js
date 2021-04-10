@@ -1,11 +1,11 @@
 import {timeIntervals} from './scale';
 import {
-  numberValue, stringValue, booleanValue, colorValue, alignValue,
-  anchorValue, baselineValue, fontWeightValue, dashArrayValue,
-  booleanOrSignal, arrayOrSignal, numberOrSignal, stringOrSignal,
-  booleanOrNumberOrSignal,
-  def, enums, object, oneOf, orSignal, ref,
-  booleanType, formatType, numberType, stringType, signalRef
+  alignValue, anchorValue, arrayOrSignal, baselineValue,
+  booleanOrNumberOrSignal, booleanOrSignal, booleanType, booleanValue,
+  colorValue, dashArrayValue, def, enums,
+  fontWeightValue, formatTypeOrSignal, formatTypeType,
+  numberOrSignal, numberType, numberValue, object, oneOf, orSignal,
+  signalRef, stringType, stringValue, textOrSignal
 } from './util';
 
 // types defined elsewhere
@@ -18,7 +18,15 @@ const labelOverlap = oneOf(
   enums(overlapEnum),
   signalRef
 );
-const labelOverlapRef = ref('labelOverlap');
+const labelOverlapRef = def('labelOverlap');
+
+const tickBandEnum = ['center', 'extent'];
+
+const tickBand = oneOf(
+  enums(tickBandEnum),
+  signalRef
+);
+const tickBandRef = def('tickBand');
 
 const tickCount = oneOf(
   numberType,
@@ -29,7 +37,7 @@ const tickCount = oneOf(
   }),
   signalRef
 );
-const tickCountRef = ref('tickCount');
+const tickCountRef = def('tickCount');
 
 const axisOrientEnum = [
   'top',
@@ -38,21 +46,28 @@ const axisOrientEnum = [
   'right'
 ];
 
+const axisOrient = orSignal(enums(axisOrientEnum));
+
 const axis = object({
-  _orient_: enums(axisOrientEnum),
+  _orient_: axisOrient,
   _scale_: stringType,
-  format: stringOrSignal,
-  formatType: orSignal(formatType),
+  format: formatTypeOrSignal,
+  formatType: orSignal(formatTypeType),
   minExtent: numberValue,
   maxExtent: numberValue,
   offset: numberValue,
   position: numberValue,
   bandPosition: numberValue,
+  translate: numberValue,
   values: arrayOrSignal,
   zindex: numberType,
 
+  // ARIA CONFIG
+  aria: booleanType,
+  description: stringType,
+
   // TITLE CONFIG
-  title: stringOrSignal,
+  title: textOrSignal,
   titlePadding: numberValue,
   titleAlign: alignValue,
   titleAnchor: anchorValue,
@@ -66,10 +81,12 @@ const axis = object({
   titleFontStyle: stringValue,
   titleFontWeight: fontWeightValue,
   titleLimit: numberValue,
+  titleLineHeight: numberValue,
   titleOpacity: numberValue,
 
   // DOMAIN CONFIG
   domain: booleanType,
+  domainCap: stringValue,
   domainColor: colorValue,
   domainDash: dashArrayValue,
   domainDashOffset: numberValue,
@@ -78,6 +95,8 @@ const axis = object({
 
   // TICK CONFIG
   ticks: booleanType,
+  tickBand: tickBandRef,
+  tickCap: stringValue,
   tickColor: colorValue,
   tickDash: dashArrayValue,
   tickDashOffset: numberValue,
@@ -93,6 +112,7 @@ const axis = object({
   // GRID CONFIG
   grid: booleanType,
   gridScale: stringType,
+  gridCap: stringValue,
   gridColor: colorValue,
   gridDash: dashArrayValue,
   gridDashOffset: numberValue,
@@ -114,7 +134,9 @@ const axis = object({
   labelFontWeight: fontWeightValue,
   labelFontStyle: stringValue,
   labelLimit: numberValue,
+  labelLineHeight: numberValue,
   labelOpacity: numberValue,
+  labelOffset: numberValue,
   labelPadding: numberValue,
   labelSeparation: numberOrSignal,
 
@@ -130,11 +152,8 @@ const axis = object({
 });
 
 export default {
-  refs: {
-    labelOverlap,
-    tickCount
-  },
-  defs: {
-    axis
-  }
+  axis,
+  labelOverlap,
+  tickBand,
+  tickCount
 };

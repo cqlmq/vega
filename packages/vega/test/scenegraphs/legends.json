@@ -110,6 +110,7 @@
                       "orient": "top",
                       "text": "Gradient",
                       "angle": 0,
+                      "limit": 180,
                       "font": "sans-serif",
                       "fontSize": 11,
                       "fontWeight": "bold"
@@ -178,7 +179,7 @@
                               "baseline": "top",
                               "fill": "#000",
                               "opacity": 1,
-                              "text": "-100",
+                              "text": "−100",
                               "font": "sans-serif",
                               "fontSize": 10
                             },
@@ -230,6 +231,7 @@
                       "orient": "top",
                       "text": "Multi-Stop",
                       "angle": 0,
+                      "limit": 180,
                       "font": "sans-serif",
                       "fontSize": 11,
                       "fontWeight": "bold"
@@ -304,6 +306,7 @@
                                       "fill": "#000",
                                       "opacity": 1,
                                       "text": "0",
+                                      "limit": 160,
                                       "font": "sans-serif",
                                       "fontSize": 10,
                                       "fontWeight": null
@@ -353,6 +356,7 @@
                                       "fill": "#000",
                                       "opacity": 1,
                                       "text": "20",
+                                      "limit": 160,
                                       "font": "sans-serif",
                                       "fontSize": 10,
                                       "fontWeight": null
@@ -402,6 +406,7 @@
                                       "fill": "#000",
                                       "opacity": 1,
                                       "text": "40",
+                                      "limit": 160,
                                       "font": "sans-serif",
                                       "fontSize": 10,
                                       "fontWeight": null
@@ -451,6 +456,7 @@
                                       "fill": "#000",
                                       "opacity": 1,
                                       "text": "60",
+                                      "limit": 160,
                                       "font": "sans-serif",
                                       "fontSize": 10,
                                       "fontWeight": null
@@ -500,6 +506,7 @@
                                       "fill": "#000",
                                       "opacity": 1,
                                       "text": "80",
+                                      "limit": 160,
                                       "font": "sans-serif",
                                       "fontSize": 10,
                                       "fontWeight": null
@@ -549,6 +556,7 @@
                                       "fill": "#000",
                                       "opacity": 1,
                                       "text": "100",
+                                      "limit": 160,
                                       "font": "sans-serif",
                                       "fontSize": 10,
                                       "fontWeight": null
@@ -589,6 +597,7 @@
                       "orient": "top",
                       "text": "Sequence",
                       "angle": 0,
+                      "limit": 180,
                       "font": "sans-serif",
                       "fontSize": 11,
                       "fontWeight": "bold"
@@ -661,7 +670,8 @@
                                       "baseline": "middle",
                                       "fill": "#000",
                                       "opacity": 1,
-                                      "text": "-100",
+                                      "text": "−100",
+                                      "limit": 160,
                                       "font": "sans-serif",
                                       "fontSize": 10
                                     }
@@ -708,7 +718,8 @@
                                       "baseline": "middle",
                                       "fill": "#000",
                                       "opacity": 1,
-                                      "text": "-35",
+                                      "text": "−35",
+                                      "limit": 160,
                                       "font": "sans-serif",
                                       "fontSize": 10
                                     }
@@ -756,6 +767,7 @@
                                       "fill": "#000",
                                       "opacity": 1,
                                       "text": "0",
+                                      "limit": 160,
                                       "font": "sans-serif",
                                       "fontSize": 10
                                     }
@@ -803,6 +815,7 @@
                                       "fill": "#000",
                                       "opacity": 1,
                                       "text": "35",
+                                      "limit": 160,
                                       "font": "sans-serif",
                                       "fontSize": 10
                                     }
@@ -850,6 +863,7 @@
                                       "fill": "#000",
                                       "opacity": 1,
                                       "text": "100",
+                                      "limit": 160,
                                       "font": "sans-serif",
                                       "fontSize": 10
                                     }
@@ -889,6 +903,7 @@
                       "orient": "top",
                       "text": "Stops",
                       "angle": 0,
+                      "limit": 180,
                       "font": "sans-serif",
                       "fontSize": 11,
                       "fontWeight": "bold"
@@ -902,6 +917,216 @@
               "width": 48,
               "height": 79,
               "orient": "right"
+            }
+          ],
+          "zindex": 0
+        },
+        {
+          "marktype": "group",
+          "role": "legend",
+          "interactive": false,
+          "clip": false,
+          "items": [
+            {
+              "items": [
+                {
+                  "marktype": "group",
+                  "role": "legend-entry",
+                  "interactive": false,
+                  "clip": false,
+                  "items": [
+                    {
+                      "items": [
+                        {
+                          "marktype": "group",
+                          "role": "scope",
+                          "interactive": false,
+                          "clip": false,
+                          "items": [
+                            {
+                              "items": [
+                                {
+                                  "marktype": "symbol",
+                                  "role": "legend-symbol",
+                                  "interactive": false,
+                                  "clip": false,
+                                  "items": [
+                                    {
+                                      "x": 6,
+                                      "y": 6,
+                                      "fill": "rgb(190, 52, 52)",
+                                      "opacity": 1,
+                                      "strokeWidth": 1.5,
+                                      "size": 100,
+                                      "shape": "circle"
+                                    }
+                                  ],
+                                  "zindex": 0
+                                },
+                                {
+                                  "marktype": "text",
+                                  "role": "legend-label",
+                                  "interactive": false,
+                                  "clip": false,
+                                  "items": [
+                                    {
+                                      "x": 16,
+                                      "y": 6,
+                                      "align": "left",
+                                      "baseline": "middle",
+                                      "fill": "#000",
+                                      "opacity": 1,
+                                      "text": "−50",
+                                      "limit": 160,
+                                      "font": "sans-serif",
+                                      "fontSize": 10
+                                    }
+                                  ],
+                                  "zindex": 0
+                                }
+                              ],
+                              "x": 0,
+                              "y": 0,
+                              "width": 40,
+                              "height": 11,
+                              "opacity": 1
+                            },
+                            {
+                              "items": [
+                                {
+                                  "marktype": "symbol",
+                                  "role": "legend-symbol",
+                                  "interactive": false,
+                                  "clip": false,
+                                  "items": [
+                                    {
+                                      "x": 6,
+                                      "y": 6,
+                                      "fill": "rgb(102, 102, 102)",
+                                      "opacity": 1,
+                                      "strokeWidth": 1.5,
+                                      "size": 100,
+                                      "shape": "circle"
+                                    }
+                                  ],
+                                  "zindex": 0
+                                },
+                                {
+                                  "marktype": "text",
+                                  "role": "legend-label",
+                                  "interactive": false,
+                                  "clip": false,
+                                  "items": [
+                                    {
+                                      "x": 16,
+                                      "y": 6,
+                                      "align": "left",
+                                      "baseline": "middle",
+                                      "fill": "#000",
+                                      "opacity": 1,
+                                      "text": "0",
+                                      "limit": 160,
+                                      "font": "sans-serif",
+                                      "fontSize": 10
+                                    }
+                                  ],
+                                  "zindex": 0
+                                }
+                              ],
+                              "x": 50,
+                              "y": 0,
+                              "width": 24,
+                              "height": 11,
+                              "opacity": 1
+                            },
+                            {
+                              "items": [
+                                {
+                                  "marktype": "symbol",
+                                  "role": "legend-symbol",
+                                  "interactive": false,
+                                  "clip": false,
+                                  "items": [
+                                    {
+                                      "x": 6,
+                                      "y": 6,
+                                      "fill": "rgb(52, 190, 52)",
+                                      "opacity": 1,
+                                      "strokeWidth": 1.5,
+                                      "size": 100,
+                                      "shape": "circle"
+                                    }
+                                  ],
+                                  "zindex": 0
+                                },
+                                {
+                                  "marktype": "text",
+                                  "role": "legend-label",
+                                  "interactive": false,
+                                  "clip": false,
+                                  "items": [
+                                    {
+                                      "x": 16,
+                                      "y": 6,
+                                      "align": "left",
+                                      "baseline": "middle",
+                                      "fill": "#000",
+                                      "opacity": 1,
+                                      "text": "50",
+                                      "limit": 160,
+                                      "font": "sans-serif",
+                                      "fontSize": 10
+                                    }
+                                  ],
+                                  "zindex": 0
+                                }
+                              ],
+                              "x": 84,
+                              "y": 0,
+                              "width": 32,
+                              "height": 11,
+                              "opacity": 1
+                            }
+                          ],
+                          "zindex": 0
+                        }
+                      ],
+                      "x": 0,
+                      "y": 0
+                    }
+                  ],
+                  "zindex": 0
+                },
+                {
+                  "marktype": "text",
+                  "role": "legend-title",
+                  "interactive": false,
+                  "clip": false,
+                  "items": [
+                    {
+                      "x": 116,
+                      "y": 16,
+                      "align": "right",
+                      "baseline": "top",
+                      "fill": "#000",
+                      "opacity": 1,
+                      "orient": "bottom",
+                      "text": "Orient None",
+                      "angle": 0,
+                      "limit": 180,
+                      "font": "sans-serif",
+                      "fontSize": 11,
+                      "fontWeight": "bold"
+                    }
+                  ],
+                  "zindex": 0
+                }
+              ],
+              "x": -100,
+              "y": 105,
+              "width": 116,
+              "height": 27,
+              "orient": "none"
             }
           ],
           "zindex": 0

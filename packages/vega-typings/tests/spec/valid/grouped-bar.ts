@@ -1,6 +1,5 @@
 import { Spec } from 'vega';
 
-// https://vega.github.io/editor/#/examples/vega/bar-chart
 export const spec: Spec = {
   "$schema": "https://vega.github.io/schema/vega/v5.json",
   "width": 300,
@@ -109,7 +108,10 @@ export const spec: Spec = {
             "enter": {
               "x": {"field": "x2", "offset": -5},
               "y": {"field": "y", "offset": {"field": "height", "mult": 0.5}},
-              "fill": {"value": "white"},
+              "fill": [
+                {"test": "contrast('white', datum.fill) > contrast('black', datum.fill)", "value": "white"},
+                {"value": "black"}
+              ],
               "align": {"value": "right"},
               "baseline": {"value": "middle"},
               "text": {"field": "datum.value"}

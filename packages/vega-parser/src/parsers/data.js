@@ -1,20 +1,20 @@
 import parseTransform from './transform';
 import parseTrigger from './trigger';
-import {hasSignal, ref} from '../util';
 import {Collect, Load, Relay, Sieve} from '../transforms';
+import {hasSignal, isSignal, ref} from '../util';
 import {array} from 'vega-util';
 
 export default function parseData(data, scope) {
-  var transforms = [];
+  const transforms = [];
 
   if (data.transform) {
-    data.transform.forEach(function(tx) {
+    data.transform.forEach(tx => {
       transforms.push(parseTransform(tx, scope));
     });
   }
 
   if (data.on) {
-    data.on.forEach(function(on) {
+    data.on.forEach(on => {
       parseTrigger(on, scope, data.name);
     });
   }
@@ -26,16 +26,16 @@ export default function parseData(data, scope) {
  * Analyze a data pipeline, add needed operators.
  */
 function analyze(data, scope, ops) {
-  var output = [],
-      source = null,
+  const output = [];
+  let source = null,
       modify = false,
       generate = false,
       upstream, i, n, t, m;
 
   if (data.values) {
     // hard-wired input data set
-    if (hasSignal(data.values) || hasSignal(data.format)) {
-      // if either values or format has signal, use dynamic loader
+    if (isSignal(data.values) || hasSignal(data.format)) {
+      // if either values is signal or format has signal, use dynamic loader
       output.push(load(scope, data));
       output.push(source = collect());
     } else {
@@ -60,9 +60,8 @@ function analyze(data, scope, ops) {
     }
   } else if (data.source) {
     // derives from one or more other data sets
-    source = upstream = array(data.source).map(function(d) {
-      return ref(scope.getData(d).output);
-    });
+    source = upstream = array(data.source)
+      .map(d => ref(scope.getData(d).output));
     output.push(null); // populate later
   }
 
@@ -101,7 +100,7 @@ function analyze(data, scope, ops) {
 }
 
 function collect(values) {
-  var s = Collect({}, values);
+  const s = Collect({}, values);
   s.metadata = {source: true};
   return s;
 }
@@ -109,6 +108,7 @@ function collect(values) {
 function load(scope, data) {
   return Load({
     url:    data.url ? scope.property(data.url) : undefined,
+    async:  data.async ? scope.property(data.async) : undefined,
     values: data.values ? scope.property(data.values) : undefined,
     format: scope.objectProperty(data.format)
   });

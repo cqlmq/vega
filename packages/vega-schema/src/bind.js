@@ -1,6 +1,5 @@
 import {
-  enums, not, object, oneOf, ref,
-  arrayType, numberType, stringType
+  array, arrayType, def, enums, not, numberType, object, oneOf, stringType
 } from './util';
 
 const Checkbox = 'checkbox',
@@ -9,7 +8,7 @@ const Checkbox = 'checkbox',
       Range = 'range';
 
 const element = stringType;
-const elementRef = ref('element');
+const elementRef = def('element');
 
 const bind = oneOf(
   object({
@@ -22,6 +21,7 @@ const bind = oneOf(
     _input_: enums([Radio, Select]),
     element: elementRef,
     _options_: arrayType,
+    labels: array(stringType),
     debounce: numberType,
     name: stringType
   }),
@@ -39,14 +39,15 @@ const bind = oneOf(
     element: elementRef,
     debounce: numberType,
     name: stringType
-  }, true)
-)
+  }, true),
+  object({
+    _element_: elementRef,
+    event: stringType,
+    debounce: numberType
+  })
+);
 
 export default {
-  refs: {
-    element
-  },
-  defs: {
-    bind
-  }
+  bind,
+  element
 };

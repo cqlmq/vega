@@ -15,31 +15,40 @@ export const Label  = 'label';
 export const Offset = 'offset';
 export const Perc   = 'perc';
 export const Perc2  = 'perc2';
-export const Size   = 'size';
 export const Value  = 'value';
 
 export const GuideLabelStyle = 'guide-label';
 export const GuideTitleStyle = 'guide-title';
 export const GroupTitleStyle = 'group-title';
+export const GroupSubtitleStyle = 'group-subtitle';
 
 export const Symbols = 'symbol';
 export const Gradient = 'gradient';
 export const Discrete = 'discrete';
 
+export const Size = 'size';
+export const Shape = 'shape';
+export const Fill = 'fill';
+export const Stroke = 'stroke';
+export const StrokeWidth = 'strokeWidth';
+export const StrokeDash = 'strokeDash';
+export const Opacity = 'opacity';
+
 // Encoding channels supported by legends
 // In priority order of 'canonical' scale
 export const LegendScales = [
-  'size',
-  'shape',
-  'fill',
-  'stroke',
-  'strokeWidth',
-  'strokeDash',
-  'opacity'
+  Size,
+  Shape,
+  Fill,
+  Stroke,
+  StrokeWidth,
+  StrokeDash,
+  Opacity
 ];
 
 export const Skip = {
   name: 1,
+  style: 1,
   interactive: 1
 };
 

@@ -1,6 +1,5 @@
 import { Spec } from 'vega';
 
-// https://vega.github.io/editor/#/examples/vega/bar-chart
 export const spec: Spec = {
   "$schema": "https://vega.github.io/schema/vega/v5.json",
   "width": 900,
@@ -17,7 +16,7 @@ export const spec: Spec = {
 
   "title": {
     "text": "Density of U.S. Airports, 2008",
-    "encode": {"update": {"dy": {"value": 12}}}
+    "offset": -15
   },
 
   "data": [
@@ -63,6 +62,7 @@ export const spec: Spec = {
   "marks": [
     {
       "type": "path",
+      "clip": true,
       "from": {"data": "states"},
       "encode": {
         "enter": {
@@ -76,6 +76,7 @@ export const spec: Spec = {
     },
     {
       "type": "symbol",
+      "clip": true,
       "from": {"data": "airports"},
       "encode": {
         "enter": {
@@ -104,7 +105,8 @@ export const spec: Spec = {
               "x": "x",
               "y": "y",
               "size": [{"signal": "width"}, {"signal": "height"}],
-              "count": {"signal": "count"}
+              "count": {"signal": "count"},
+              "bandwidth": 20
             }
           ]
         }

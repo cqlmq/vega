@@ -1,4 +1,4 @@
-import { object, stringType } from "./util";
+import { object, stringType } from './util';
 
 const expr = object({
   _expr_: stringType,
@@ -8,8 +8,6 @@ const expr = object({
 const exprString = stringType;
 
 export default {
-  refs: {
-    expr,
-    exprString
-  }
+  expr,
+  exprString
 };

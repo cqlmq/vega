@@ -1,9 +1,9 @@
 import {
-  Symbols, Start, Middle, End, Top, Bottom, Left, Right,
-  TopLeft, TopRight, BottomLeft, BottomRight, None,
-  Each, Flush
+  Bottom, BottomLeft, BottomRight, Each, End, Flush, Left, Middle,
+  None, Right, Start, Symbols, Top,
+  TopLeft, TopRight
 } from '../constants';
-import {boundStroke} from 'vega-scenegraph';
+import {boundStroke, multiLineOffset} from 'vega-scenegraph';
 
 // utility for looking up legend layout configuration
 function lookup(config, orient) {
@@ -15,7 +15,7 @@ function lookup(config, orient) {
 
 // if legends specify offset directly, use the maximum specified value
 function offsets(legends, value) {
-  var max = -Infinity;
+  let max = -Infinity;
   legends.forEach(item => {
     if (item.offset != null) max = Math.max(max, item.offset);
   });
@@ -153,24 +153,24 @@ function legendGroupLayout(view, item, entry) {
       case Bottom:
         break;
       default:
-        ey += title.fontSize + tpad;
+        ey += title.bounds.height() + tpad;
     }
     if (ex || ey) translate(view, entry, ex, ey);
 
     switch (title.orient) {
       case Left:
-        ty += legendTitleOffset(item, entry, title, anchor, 0, 1);
+        ty += legendTitleOffset(item, entry, title, anchor, 1, 1);
         break;
       case Right:
-        tx += legendTitleOffset(item, entry, title, End, 1, 0) + tpad;
-        ty += legendTitleOffset(item, entry, title, anchor, 0, 1);
+        tx += legendTitleOffset(item, entry, title, End, 0, 0) + tpad;
+        ty += legendTitleOffset(item, entry, title, anchor, 1, 1);
         break;
       case Bottom:
-        tx += legendTitleOffset(item, entry, title, anchor, 1, 0);
-        ty += legendTitleOffset(item, entry, title, End, 0, 0, 1) + tpad;
+        tx += legendTitleOffset(item, entry, title, anchor, 0, 0);
+        ty += legendTitleOffset(item, entry, title, End, -1, 0, 1) + tpad;
         break;
       default:
-        tx += legendTitleOffset(item, entry, title, anchor, 1, 0);
+        tx += legendTitleOffset(item, entry, title, anchor, 0, 0);
     }
     if (tx || ty) translate(view, title, tx, ty);
 
@@ -182,15 +182,18 @@ function legendGroupLayout(view, item, entry) {
   }
 }
 
-function legendTitleOffset(item, entry, title, anchor, x, lr, noBar) {
+function legendTitleOffset(item, entry, title, anchor, y, lr, noBar) {
   const grad = item.datum.type !== 'symbol',
         vgrad = title.datum.vgrad,
         e = grad && (lr || !vgrad) && !noBar ? entry.items[0] : entry,
-        s = e.bounds[x ? 'x2' : 'y2'] - item.padding,
+        s = e.bounds[y ? 'y2' : 'x2'] - item.padding,
         u = vgrad && lr ? s : 0,
-        v = vgrad && lr ? 0 : s;
+        v = vgrad && lr ? 0 : s,
+        o = y <= 0 ? 0 : multiLineOffset(title);
 
-  return Math.round(anchor === Start ? u : anchor === End ? v : 0.5 * s);
+  return Math.round(anchor === Start ? u
+    : anchor === End ? (v - o)
+    : 0.5 * (s - o));
 }
 
 function translate(view, item, dx, dy) {
@@ -203,13 +206,13 @@ function translate(view, item, dx, dy) {
 
 function legendEntryLayout(entries) {
   // get max widths for each column
-  var widths = entries.reduce(function(w, g) {
+  const widths = entries.reduce((w, g) => {
     w[g.column] = Math.max(g.bounds.x2 - g.x, w[g.column] || 0);
     return w;
   }, {});
 
   // set dimensions of legend entry groups
-  entries.forEach(function(g) {
+  entries.forEach(g => {
     g.width  = widths[g.column];
     g.height = g.bounds.y2 - g.y;
   });

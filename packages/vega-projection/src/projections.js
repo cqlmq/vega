@@ -6,20 +6,25 @@ import {
   geoConicConformal,
   geoConicEqualArea,
   geoConicEquidistant,
+  geoEqualEarth,
   geoEquirectangular,
   geoGnomonic,
   geoIdentity,
   geoMercator,
   geoNaturalEarth1,
   geoOrthographic,
+  geoPath,
   geoStereographic,
-  geoTransverseMercator,
-  geoPath
+  geoTransverseMercator
 } from 'd3-geo';
 
-var defaultPath = geoPath();
+import {
+  geoMollweide
+} from 'd3-geo-projection';
 
-export var projectionProperties = [
+const defaultPath = geoPath();
+
+export const projectionProperties = [
   // standard properties in d3-geo
   'clipAngle',
   'clipExtent',
@@ -49,16 +54,16 @@ export var projectionProperties = [
  */
 function create(type, constructor) {
   return function projection() {
-    var p = constructor();
+    const p = constructor();
 
     p.type = type;
 
     p.path = geoPath().projection(p);
 
     p.copy = p.copy || function() {
-      var c = projection();
-      projectionProperties.forEach(function(prop) {
-        if (p.hasOwnProperty(prop)) c[prop](p[prop]());
+      const c = projection();
+      projectionProperties.forEach(prop => {
+        if (p[prop]) c[prop](p[prop]());
       });
       c.path.pointRadius(p.path.pointRadius());
       return c;
@@ -77,7 +82,7 @@ export function projection(type, proj) {
     projections[type] = create(type, proj);
     return this;
   } else {
-    return projections.hasOwnProperty(type) ? projections[type] : null;
+    return projections[type] || null;
   }
 }
 
@@ -85,7 +90,7 @@ export function getProjectionPath(proj) {
   return (proj && proj.path) || defaultPath;
 }
 
-var projections = {
+const projections = {
   // base d3-geo projection types
   albers:               geoAlbers,
   albersusa:            geoAlbersUsa,
@@ -94,16 +99,18 @@ var projections = {
   conicconformal:       geoConicConformal,
   conicequalarea:       geoConicEqualArea,
   conicequidistant:     geoConicEquidistant,
+  equalEarth:           geoEqualEarth,
   equirectangular:      geoEquirectangular,
   gnomonic:             geoGnomonic,
   identity:             geoIdentity,
   mercator:             geoMercator,
+  mollweide:            geoMollweide,
   naturalEarth1:        geoNaturalEarth1,
   orthographic:         geoOrthographic,
   stereographic:        geoStereographic,
   transversemercator:   geoTransverseMercator
 };
 
-for (var key in projections) {
+for (const key in projections) {
   projection(key, projections[key]);
 }

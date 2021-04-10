@@ -6,11 +6,11 @@ const fontWeightEnum = [
 
 const alignEnum = ['left', 'right', 'center'];
 
-const baselineEnum = ['top', 'middle', 'bottom', 'alphabetic'];
+const baselineEnum = ['top', 'middle', 'bottom', 'alphabetic', 'line-top', 'line-bottom'];
 
 const anchorEnum = [null, 'start', 'middle', 'end'];
 
-const formatTypeEnum = ['number', 'time'];
+const formatTypeEnum = ['number', 'time', 'utc'];
 
 const orientEnum = ['left', 'right', 'top', 'bottom'];
 
@@ -31,11 +31,7 @@ export function not(schema) {
 }
 
 export function def(name) {
-  return {$ref: '#/defs/' + name};
-}
-
-export function ref(name) {
-  return {$ref: '#/refs/' + name};
+  return {$ref: '#/definitions/' + name};
 }
 
 export function type(name, props) {
@@ -61,7 +57,7 @@ export function object(properties, addl) {
   const p = {},
         r = [];
 
-  for (let key in properties) {
+  for (const key in properties) {
     let k = key;
     if (key.startsWith('_') && key.endsWith('_')) {
       r.push(k = key.slice(1, -1));
@@ -105,63 +101,92 @@ export const objectType = type('object');
 export const stringType = type('string');
 export const colorStringType = stringType;
 export const nullType = type('null');
-export const signalRef = ref('signal');
+export const signalRef = def('signalRef');
 
-export const formatType = enums(formatTypeEnum);
+export const formatTypeType = enums(formatTypeEnum);
+
+export const formatSpecifier = object({
+  year: stringType,
+  quarter: stringType,
+  month: stringType,
+  date: stringType,
+  week: stringType,
+  day: stringType,
+  hours: stringType,
+  minutes: stringType,
+  seconds: stringType,
+  milliseconds: stringType
+});
+
+export const formatTypeOrSignal = {
+  oneOf: [
+    stringType,
+    formatSpecifier,
+    signalRef
+  ]
+};
+
+export const textType = {
+  oneOf: [
+    stringType,
+    {type: 'array', items: stringType}
+  ]
+};
 
 export const alignValue = oneOf(
   enums(alignEnum),
-  ref('alignValue')
+  def('alignValue')
 );
 
 export const anchorValue = oneOf(
   enums(anchorEnum),
-  ref('anchorValue')
+  def('anchorValue')
 );
 
 export const baselineValue = oneOf(
   enums(baselineEnum),
-  ref('baselineValue')
+  def('baselineValue')
 );
 
 export const booleanValue = oneOf(
   booleanType,
-  ref('booleanValue')
+  def('booleanValue')
 );
 
 export const colorValue = oneOf(
   nullType,
   stringType,
-  ref('colorValue')
+  def('colorValue')
 );
 
 export const dashArrayValue = oneOf(
   array(numberType),
-  ref('arrayValue')
+  def('arrayValue')
 );
 
 export const fontWeightValue = oneOf(
   enums(fontWeightEnum),
-  ref('fontWeightValue')
+  def('fontWeightValue')
 );
 
 export const numberValue = oneOf(
   numberType,
-  ref('numberValue')
+  def('numberValue')
 );
 
 export const orientValue = oneOf(
   enums(orientEnum),
-  ref('orientValue')
+  def('orientValue')
 );
 
 export const stringValue = oneOf(
   stringType,
-  ref('stringValue')
+  def('stringValue')
 );
 
 export const booleanOrNumberOrSignal = oneOf(booleanType,numberType,signalRef);
-export const booleanOrSignal = ref('booleanOrSignal');
-export const arrayOrSignal = ref('arrayOrSignal');
-export const numberOrSignal = ref('numberOrSignal');
-export const stringOrSignal = ref('stringOrSignal');
+export const booleanOrSignal = def('booleanOrSignal');
+export const arrayOrSignal = def('arrayOrSignal');
+export const numberOrSignal = def('numberOrSignal');
+export const stringOrSignal = def('stringOrSignal');
+export const textOrSignal = def('textOrSignal');

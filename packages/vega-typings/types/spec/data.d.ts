@@ -14,9 +14,13 @@ export interface FormatJSON {
 }
 export interface FormatSV {
   type: 'csv' | 'tsv';
+  header?: string[];
   parse?: Parse;
 }
-export interface FormatDSV extends FormatSV {
+export interface FormatDSV {
+  type: 'dsv';
+  header?: string[];
+  parse?: Parse;
   delimiter: string;
 }
 export type FormatTopoJSON = {
@@ -24,31 +28,41 @@ export type FormatTopoJSON = {
   property?: string;
 } & (
   | {
-      feature: 'string';
+      feature: string;
     }
   | {
-      mesh?: 'string';
-    });
+      mesh: string;
+      filter: 'interior' | 'exterior' | null;
+    }
+);
 export type Format = FormatJSON | FormatSV | FormatDSV | FormatTopoJSON | { parse: Parse };
 
 export interface BaseData {
   name: string;
   on?: OnTrigger[];
-  format?: Format | SignalRef;
   transform?: Transforms[];
 }
 
 export type SourceData = {
-  source: string;
+  source: string | string[];
 } & BaseData;
 
 export type ValuesData = {
-  values: Datum[];
+  values: Datum[] | object;
+  format?: Format | SignalRef;
+  async?: boolean | SignalRef;
 } & BaseData;
 
 export type UrlData = {
-  url: string | SignalRef;
+  url: URI | SignalRef;
+  format?: Format | SignalRef;
+  async?: boolean | SignalRef;
 } & BaseData;
 
 export type Data = SourceData | ValuesData | UrlData | BaseData;
 export type Datum = any;
+
+/**
+ * @format uri-reference
+ */
+export type URI = string;

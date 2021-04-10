@@ -1,13 +1,13 @@
 import {
-  array, enums, object, oneOf, orSignal, ref,
-  arrayType, nullType, booleanType, numberType, stringType, signalRef,
-  stringOrSignal, numberOrSignal, booleanOrSignal, booleanOrNumberOrSignal
+  array, arrayType, booleanOrNumberOrSignal, booleanOrSignal, booleanType,
+  def, enums, nullType, numberOrSignal, numberType, object, oneOf, orSignal,
+  signalRef, stringOrSignal, stringType
 } from './util';
 
 import {
-  Linear, Log, Pow, Sqrt, Symlog, Time, UTC, Sequential,
-  Quantile, Quantize, Threshold, Identity,
-  Ordinal, Point, Band, BinOrdinal
+  Band, BinOrdinal, Identity, Linear, Log, Ordinal, Point, Pow,
+  Quantile, Quantize, Sequential, Sqrt,
+  Symlog, Threshold, Time, UTC
 } from 'vega-scale';
 
 export const timeIntervals = [
@@ -53,7 +53,7 @@ const scheme = object({
     stringType,
     array(oneOf(stringType, signalRef)), signalRef),
   count: numberOrSignal,
-  extent: oneOf(array(numberOrSignal, {numItems: 2}), signalRef)
+  extent: oneOf(array(numberOrSignal, {minItems: 2, maxItems: 2}), signalRef)
 });
 
 const schemeRange = oneOf(
@@ -74,7 +74,7 @@ const bandRange = oneOf(
   signalRef
 );
 
-const scaleBinsRef = ref('scaleBins');
+const scaleBinsRef = def('scaleBins');
 const scaleBins = oneOf(
   array(numberOrSignal),
   object({
@@ -85,7 +85,7 @@ const scaleBins = oneOf(
   signalRef
 );
 
-const scaleInterpolateRef = ref('scaleInterpolate');
+const scaleInterpolateRef = def('scaleInterpolate');
 const scaleInterpolate = oneOf(
   stringType,
   signalRef,
@@ -95,7 +95,7 @@ const scaleInterpolate = oneOf(
   })
 );
 
-const sortOrderRef = ref('sortOrder');
+const sortOrderRef = def('sortOrder');
 const sortOrder = orSignal(enums(sortOrderEnum));
 
 const sortDomain = oneOf(
@@ -109,10 +109,15 @@ const sortDomain = oneOf(
 
 const sortMultiDomain = oneOf(
   booleanType,
-  object({op: enums(['count']), order: sortOrderRef})
+  object({op: enums(['count']), order: sortOrderRef}),
+  object({
+    _field_: stringOrSignal,
+    _op_: enums(['count', 'min', 'max']),
+    order: sortOrderRef
+  })
 );
 
-const scaleDataRef = ref('scaleData');
+const scaleDataRef = def('scaleData');
 const scaleData = oneOf(
   object({
     _data_: stringType,
@@ -250,14 +255,10 @@ const scale = oneOf(
 );
 
 export default {
-  refs: {
-    scaleField: stringOrSignal,
-    sortOrder,
-    scaleBins,
-    scaleInterpolate,
-    scaleData
-  },
-  defs: {
-    scale
-  }
+  scale,
+  scaleField: stringOrSignal,
+  sortOrder,
+  scaleBins,
+  scaleInterpolate,
+  scaleData
 };

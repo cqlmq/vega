@@ -9,16 +9,47 @@ import {
 } from 'vega-dataflow';
 
 import {
-  selectionTest,
+  selectionIdTest,
   selectionResolve,
+  selectionTest,
+  selectionTuples,
   selectionVisitor
 } from 'vega-selections';
 
 import {
-  random
+  cumulativeLogNormal,
+  cumulativeNormal,
+  cumulativeUniform,
+  densityLogNormal,
+  densityNormal,
+  densityUniform,
+  quantileLogNormal,
+  quantileNormal,
+  quantileUniform,
+  random,
+  sampleLogNormal,
+  sampleNormal,
+  sampleUniform
 } from 'vega-statistics';
 
 import {
+  dayofyear,
+  timeOffset,
+  timeSequence,
+  timeUnitSpecifier,
+  utcOffset,
+  utcSequence,
+  utcdayofyear,
+  utcweek,
+  week
+} from 'vega-time';
+
+import {
+  clampRange,
+  extend,
+  extent,
+  flush,
+  inrange,
   isArray,
   isBoolean,
   isDate,
@@ -26,30 +57,26 @@ import {
   isObject,
   isRegExp,
   isString,
+  lerp,
+  pad,
   panLinear,
   panLog,
   panPow,
   panSymlog,
-  zoomLinear,
-  zoomLog,
-  zoomPow,
-  zoomSymlog,
+  peek,
+  quarter,
+  span,
+  stringValue,
   toBoolean,
   toDate,
   toNumber,
   toString,
-  clampRange,
-  extent,
-  flush,
-  inrange,
-  lerp,
-  pad,
-  peek,
-  quarter,
+  truncate,
   utcquarter,
-  span,
-  stringValue,
-  truncate
+  zoomLinear,
+  zoomLog,
+  zoomPow,
+  zoomSymlog
 } from 'vega-util';
 
 import {
@@ -57,96 +84,108 @@ import {
 } from 'd3-array';
 
 import {
-  rgb,
-  lab,
   hcl,
-  hsl
+  hsl,
+  lab,
+  rgb
 } from 'd3-color';
+
+import {
+  contrast,
+  luminance
+} from './functions/luminance';
 
 import {
   data,
   indata,
   setdata
-} from './data';
+} from './functions/data';
+
+import encode from './functions/encode';
 
 import {
-  default as encode
-} from './encode';
-
-import {
-  format,
-  utcFormat,
-  timeFormat,
-  utcParse,
-  timeParse,
-  monthFormat,
-  monthAbbrevFormat,
+  dayAbbrevFormat,
   dayFormat,
-  dayAbbrevFormat
-} from './format';
+  format,
+  monthAbbrevFormat,
+  monthFormat,
+  timeFormat,
+  timeParse,
+  utcFormat,
+  utcParse
+} from './functions/format';
 
 import {
   geoArea,
   geoBounds,
   geoCentroid
-} from './geo';
+} from './functions/geo';
+
+import inScope from './functions/inscope';
+
+import intersect from './functions/intersect';
 
 import {
-  default as inScope
-} from './inscope';
-
-import {
-  default as intersect
-} from './intersect';
-
-import {
-  warn,
+  debug,
   info,
-  debug
-} from './log';
+  warn
+} from './functions/log';
+
+import merge from './functions/merge';
+
+import modify from './functions/modify';
 
 import {
-  default as merge
-} from './merge';
+  pinchAngle,
+  pinchDistance
+} from './functions/pinch';
+
+import pluck from './functions/pluck';
 
 import {
-  default as modify
-} from './modify';
+  indexof,
+  join,
+  lastindexof,
+  replace,
+  reverse,
+  slice
+} from './functions/sequence';
 
 import {
-  pinchDistance,
-  pinchAngle
-} from './pinch';
-
-import {
-  range,
-  domain,
-  bandwidth,
   bandspace,
+  bandwidth,
   copy,
-  scale,
-  invert
-} from './scale';
+  domain,
+  invert,
+  range,
+  scale
+} from './functions/scale';
 
-import {
-  default as scaleGradient
-} from './scale-gradient';
+import scaleGradient from './functions/scale-gradient';
 
 import {
   geoShape,
   pathShape
-} from './shape';
+} from './functions/shape';
 
 import {
-  treePath,
-  treeAncestors
-} from './tree';
+  treeAncestors,
+  treePath
+} from './functions/tree';
 
 import {
   containerSize,
   screen,
   windowSize
-} from './window';
+} from './functions/window';
+
+import {
+  SignalPrefix
+} from './constants';
+
+import {
+  internalScaleFunctions
+} from './scales';
 
 import {
   dataVisitor,
@@ -154,28 +193,47 @@ import {
   scaleVisitor
 } from './visitors';
 
-import {SignalPrefix} from './prefix';
-
 // Expression function context object
 export const functionContext = {
-  random: function() { return random(); }, // override default
+  random() { return random(); }, // override default
+  cumulativeNormal,
+  cumulativeLogNormal,
+  cumulativeUniform,
+  densityNormal,
+  densityLogNormal,
+  densityUniform,
+  quantileNormal,
+  quantileLogNormal,
+  quantileUniform,
+  sampleNormal,
+  sampleLogNormal,
+  sampleUniform,
   isArray,
   isBoolean,
   isDate,
+  isDefined(_) { return _ !== undefined; },
   isNumber,
   isObject,
   isRegExp,
   isString,
   isTuple,
+  isValid(_) { return _ != null && _ === _; },
   toBoolean,
   toDate,
   toNumber,
   toString,
+  indexof,
+  join,
+  lastindexof,
+  replace,
+  reverse,
+  slice,
   flush,
   lerp,
   merge,
   pad,
   peek,
+  pluck,
   span,
   inrange,
   truncate,
@@ -183,18 +241,29 @@ export const functionContext = {
   lab,
   hcl,
   hsl,
+  luminance,
+  contrast,
   sequence,
   format,
   utcFormat,
   utcParse,
+  utcOffset,
+  utcSequence,
   timeFormat,
   timeParse,
+  timeOffset,
+  timeSequence,
+  timeUnitSpecifier,
   monthFormat,
   monthAbbrevFormat,
   dayFormat,
   dayAbbrevFormat,
   quarter,
   utcquarter,
+  week,
+  utcweek,
+  dayofyear,
+  utcdayofyear,
   warn,
   info,
   debug,
@@ -227,11 +296,26 @@ const eventFunctions = ['view', 'item', 'group', 'xy', 'x', 'y'], // event funct
       thisPrefix = 'this.', // function context prefix
       astVisitors = {}; // AST visitors for dependency analysis
 
+// export code generator parameters
+export const codegenParams = {
+  forbidden:  ['_'],
+  allowed:    ['datum', 'event', 'item'],
+  fieldvar:   'datum',
+  globalvar:  id => `_[${stringValue(SignalPrefix + id)}]`,
+  functions:  buildFunctions,
+  constants:  constants,
+  visitors:   astVisitors
+};
+
+// export code generator
+export const codeGenerator = codegen(codegenParams);
+
 // Build expression function registry
 function buildFunctions(codegen) {
   const fn = functions(codegen);
   eventFunctions.forEach(name => fn[name] = eventPrefix + name);
-  for (let name in functionContext) { fn[name] = thisPrefix + name; }
+  for (const name in functionContext) { fn[name] = thisPrefix + name; }
+  extend(fn, internalScaleFunctions(codegen, functionContext, astVisitors));
   return fn;
 }
 
@@ -272,17 +356,6 @@ expressionFunction('treeAncestors', treeAncestors, dataVisitor);
 
 // register Vega-Lite selection functions
 expressionFunction('vlSelectionTest', selectionTest, selectionVisitor);
+expressionFunction('vlSelectionIdTest', selectionIdTest, selectionVisitor);
 expressionFunction('vlSelectionResolve', selectionResolve, selectionVisitor);
-
-// Export code generator and parameters
-export const codegenParams = {
-  blacklist:  ['_'],
-  whitelist:  ['datum', 'event', 'item'],
-  fieldvar:   'datum',
-  globalvar:  function(id) { return '_[' + stringValue(SignalPrefix + id) + ']'; },
-  functions:  buildFunctions,
-  constants:  constants,
-  visitors:   astVisitors
-};
-
-export var codeGenerator = codegen(codegenParams);
+expressionFunction('vlSelectionTuples', selectionTuples);

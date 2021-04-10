@@ -1,6 +1,5 @@
 import { Spec } from 'vega';
 
-// https://vega.github.io/editor/#/examples/vega/bar-chart
 export const spec: Spec = {
   "$schema": "https://vega.github.io/schema/vega/v5.json",
   "width": 400,
@@ -89,7 +88,7 @@ export const spec: Spec = {
   ],
 
   "axes": [
-    {"orient": "bottom", "scale": "xscale", "tickCount": 20, "zindex": 1},
+    {"orient": "bottom", "scale": "xscale", "tickCount": 20, "labelOverlap": true, "zindex": 1},
     {"orient": "left", "scale": "yscale", "tickCount": 5, "zindex": 1}
   ],
 

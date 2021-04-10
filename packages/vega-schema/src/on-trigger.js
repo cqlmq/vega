@@ -1,7 +1,7 @@
-import { array, object, oneOf, ref, booleanType } from './util';
+import { array, booleanType, def, object, oneOf } from './util';
 
 // types defined elsewhere
-const exprStringRef = ref('exprString');
+const exprStringRef = def('exprString');
 
 const onTrigger = array(object({
   _trigger_: exprStringRef,
@@ -19,8 +19,6 @@ const onMarkTrigger = array(object({
 }));
 
 export default {
-  defs: {
-    onTrigger,
-    onMarkTrigger
-  }
+  onTrigger,
+  onMarkTrigger
 };

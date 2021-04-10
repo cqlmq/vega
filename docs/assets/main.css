@@ -156,7 +156,7 @@ pre {
   background: #F9F9F9;
   border: 1px solid #eee;
   padding: 8px 10px;
-  overflow-x: scroll;
+  overflow-x: auto;
   max-width: 978px;
 }
 
@@ -462,16 +462,17 @@ ul.column-set, .column-set ul {
 .view .vega-bind input[type="range"] {
   padding: 0;
   width: 100px;
+  margin-right: 4px;
+}
+.view .vega-bind input[type="radio"] {
+  margin-right: 4px;
 }
 .view .vega-bind select {
   max-width: 200px;
 }
-.view .vega-bind label {
-  margin-left: 4px;
-}
 .view .vega-bind-radio label {
   margin-left: 0;
-  margin-right: 4px;
+  margin-right: 0.5em;
 }
 .embed > a {
   visibility: hidden;

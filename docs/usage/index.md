@@ -14,6 +14,7 @@ Vega can be deployed for interactive visualizations within a web browser, or to 
   - [Using the Vega View API](#view)
   - [Using the Vega-Embed Module](#embed)
   - [Supporting Internet Explorer](#ie)
+  - [Content Security Policy](#csp)
 - [Command Line Utilities](#cli)
 - [Server-Side Deployment](#node)
 
@@ -26,7 +27,7 @@ Try Vega with Vega-Embed online and publish your own chart by forking [our examp
 
 ### <a name="import"></a>Import Vega JavaScript
 
-To use Vega on a web page you first need to load the Vega JavaScript files. The simplest option is to import the complete Vega bundle. Load `vega.min.js` for deployment, and use `vega.js` for easier debugging.
+To use Vega on a web page you first need to load the Vega JavaScript files. The simplest option is to import the complete Vega bundle.
 
 ```html
 <head>
@@ -50,6 +51,12 @@ To use Vega on a web page you first need to load the Vega JavaScript files. The 
   <script src="https://cdn.jsdelivr.net/npm/topojson-client@{{ site.data.versions.topojson }}"></script>
   <script src="https://cdn.jsdelivr.net/npm/vega@{{ site.data.versions.vega }}/build/vega-core.min.js"></script>
 </head>
+```
+
+**Using Vega with a bundler.** If you use Vega with a bundler like [rollup.js](https://rollupjs.org/guide/en/#with-npm-packages), you can import Vega [as a module](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import).
+
+```
+import * as vega from "vega";
 ```
 
 
@@ -114,10 +121,32 @@ Vega visualizations will be added to a parent DOM container element. This elemen
 
 [Back to reference](#reference)
 
-
 ### <a name="ie"></a>Supporting Internet Explorer or Older Browsers
 
-Vega is intended to be used with [ES6](http://es6-features.org/)-compliant JavaScript runtimes. This includes all major modern browsers, including Firefox, Chrome, Safari, and Edge, and server-side using Node.js. Prior to version 4.4, Vega supported Internet Explorer 10 or 11 in conjunction with a set of polyfills; for more details, see the [supporting Internet Explorer](internet-explorer) documentation. Subsequent Vega versions do *not* directly support IE. To use the latest versions of Vega with IE, you can use a JavaScript compiler such as [Babel](https://babeljs.io/) to generate ES5-compliant code.
+Vega is intended to be used with [ES6](http://es6-features.org/)-compliant JavaScript runtimes. This includes all major modern browsers, including Firefox, Chrome, Safari, and Edge, and server-side using Node.js. Prior to version 4.4, Vega supported Internet Explorer 10 or 11 in conjunction with a set of polyfills; for more details, see the [supporting Internet Explorer](internet-explorer) documentation. Subsequent Vega versions do *not* directly support IE. To use the latest versions of Vega with IE, you can use a JavaScript compiler such as [Babel](https://babeljs.io/) to generate ES5-compliant code or use our precompiled ES5 compliant versions as shown below.
+
+```html
+<head>
+  <script src="https://cdn.jsdelivr.net/npm/vega@{{ site.data.versions.vega }}/build-es5/vega.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-lite@{{ site.data.versions.vega-lite }}/build-es5/vega-lite.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-embed@{{ site.data.versions.vega-embed }}/build-es5/vega-embed.js"></script>
+</head>
+<body>
+  <div id="view"></div>
+  <script>
+    vegaEmbed(
+      '#view',
+      'https://vega.github.io/vega/examples/bar-chart.vg.json'
+    );
+  </script>
+</body>
+```
+
+[Back to reference](#reference)
+
+### <a name="csp"></a>Vega and Content Security Policy (CSP)
+
+By default Vega is not compliant with standard [Content Security Policy (CSP)](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP), as it uses the [Function constructor](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/Function) to generate functions defined in the Vega expression language. However, Vega allows use of alternative expression evaluators that are CSP-compliant. For more, see the [expression interpreter](interpreter) usage documentation.
 
 [Back to reference](#reference)
 
@@ -126,11 +155,13 @@ Vega is intended to be used with [ES6](http://es6-features.org/)-compliant JavaS
 
 The `vega-cli` package includes three node.js-based command line utilities &ndash; `vg2pdf`, `vg2png`, and `vg2svg` &ndash; for rendering static visualization images. These commands render to PDF, PNG, or SVG files, respectively.
 
-- **vg2pdf**: `vg2pdf [options] vega_json_file [output_pdf_file]`
-- **vg2png**: `vg2png [options] vega_json_file [output_png_file]`
-- **vg2svg**: `vg2svg [options] vega_json_file [output_svg_file]`
+- **vg2pdf**: `vg2pdf [options] [input_vega_json_file] [output_pdf_file]`
+- **vg2png**: `vg2png [options] [input_vega_json_file] [output_png_file]`
+- **vg2svg**: `vg2svg [options] [input_vega_json_file] [output_svg_file]`
 
-If no output file is given, the resulting PNG or SVG data will be written to standard output, and so can be piped into other applications. The programs also accept the following (optional) parameters:
+If no input Vega JSON file is given, the utilities will attempt to read the file from standard input. If no output file is given, the resulting PDF, PNG, or SVG data will be written to standard output, and so can be piped into other applications.
+
+The programs also accept the following (optional) parameters:
 
 * __-b__, __--base__ - [String] A base directory to use for data and image loading. For web retrieval, use `-b http://host/data/`. For files, use `-b data/` (relative path) or `-b file:///dir/data/` (absolute path).
 * __-h__, __--header__ - [Flag] Includes XML header and DOCTYPE in SVG output (vg2svg only).
@@ -185,7 +216,7 @@ vg2png -s 2 test/specs-valid/bar.vg.json bar.png
 
 ## <a name="node"></a>Server-Side Deployment using Node.js
 
-To use Vega as a component within a larger project, first install it either directly (`yarn add vega` or `npm install vega`) or by including `"vega"` among the dependencies in your package.json file. In node.js JavaScript code, import Vega using `require('vega')`. Much like browser-based deployments, Node.js deployments leverage the [Vega View API](../docs/view). However, server-side View instances should use the renderer type `none` and provide no DOM element to the `initialize` method.
+To use Vega as a component within a larger project, first install it either directly (`yarn add vega` or `npm install vega`) or by including `"vega"` among the dependencies in your package.json file. In node.js JavaScript code, import Vega using `require('vega')`. Much like browser-based deployments, Node.js deployments leverage the [Vega View API](../docs/api/view). However, server-side View instances should use the renderer type `none` and provide no DOM element to the `initialize` method.
 
 <a name="node-canvas"></a>To generate PNG images and accurately measure font metrics for text mark truncation, the [node-canvas package](https://github.com/Automattic/node-canvas) must be installed. The vega package does not require node-canvas by default, so you must include it as an explicit dependency in your own project if you wish to use it. The vega-cli package, on the other hand, _does_ include node-canvas as an explicit dependency.
 

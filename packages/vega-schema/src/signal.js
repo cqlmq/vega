@@ -1,20 +1,21 @@
 import {
-  def, enums, not, object, oneOf, orSignal, ref, type,
-  anyType, arrayType, booleanType, numberType, stringType
+  anyType, arrayType, booleanType, def, enums, not, numberType, object,
+  oneOf, orSignal, stringType, textType, type
 } from './util';
 
 // types defined elsewhere
-const exprStringRef = ref('exprString');
+const exprStringRef = def('exprString');
 const onEventsRef = def('onEvents');
 const bindRef = def('bind');
 
 const ReservedNameEnum = ['parent', 'datum', 'event', 'item'];
 
-const signal = object({_signal_: stringType}, undefined);
+const signalRef = object({_signal_: stringType}, undefined);
 const arrayOrSignal = orSignal(arrayType);
 const booleanOrSignal = orSignal(booleanType);
 const numberOrSignal = orSignal(numberType);
 const stringOrSignal = orSignal(stringType);
+const textOrSignal = orSignal(textType);
 
 const signalNameRef = def('signalName');
 const signalName = type(
@@ -48,23 +49,19 @@ const signalPush = object({
   on: onEventsRef
 });
 
-const signalDef = oneOf(
+const signal = oneOf(
   signalPush,
   signalNew,
   signalInit
 );
 
 export default {
-  refs: {
-    signal,
-    arrayOrSignal,
-    booleanOrSignal,
-    numberOrSignal,
-    stringOrSignal
-  },
-
-  defs: {
-    signalName,
-    signal: signalDef
-  }
+  signal,
+  signalName,
+  signalRef,
+  arrayOrSignal,
+  booleanOrSignal,
+  numberOrSignal,
+  stringOrSignal,
+  textOrSignal
 };

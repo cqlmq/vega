@@ -1,6 +1,5 @@
 import { Spec } from 'vega';
 
-// https://vega.github.io/editor/#/examples/vega/bar-chart
 export const spec: Spec = {
   "$schema": "https://vega.github.io/schema/vega/v5.json",
   "width": 400,
@@ -32,12 +31,12 @@ export const spec: Spec = {
       "url": "data/movies.json",
       "transform": [
         {
-          "type": "extent", "field": "IMDB_Rating",
+          "type": "extent", "field": "IMDB Rating",
           "signal": "extent"
         },
         {
           "type": "bin", "signal": "bins",
-          "field": "IMDB_Rating", "extent": {"signal": "extent"},
+          "field": "IMDB Rating", "extent": {"signal": "extent"},
           "maxbins": {"signal": "maxbins"}
         }
       ]
@@ -48,7 +47,7 @@ export const spec: Spec = {
       "transform": [
         {
           "type": "filter",
-          "expr": "datum['IMDB_Rating'] != null"
+          "expr": "datum['IMDB Rating'] != null"
         },
         {
           "type": "aggregate",
@@ -62,7 +61,7 @@ export const spec: Spec = {
       "transform": [
         {
           "type": "filter",
-          "expr": "datum['IMDB_Rating'] == null"
+          "expr": "datum['IMDB Rating'] == null"
         },
         {
           "type": "aggregate"

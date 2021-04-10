@@ -23,6 +23,11 @@ export {
 } from './src/logger';
 
 export {
+  mergeConfig,
+  writeConfig
+} from './src/mergeConfig';
+
+export {
   panLinear,
   panLog,
   panPow,
@@ -40,7 +45,7 @@ export {
 
 export {default as array} from './src/array';
 export {default as clampRange} from './src/clampRange';
-export {default as compare} from './src/compare';
+export {default as compare, ascending} from './src/compare';
 export {default as constant} from './src/constant';
 export {default as debounce} from './src/debounce';
 export {default as error} from './src/error';
@@ -50,18 +55,21 @@ export {default as extentIndex} from './src/extentIndex';
 export {default as fastmap} from './src/fastmap';
 export {default as field} from './src/field';
 export {default as flush} from './src/flush';
+export {default as hasOwnProperty} from './src/hasOwnProperty';
 export {default as inherits} from './src/inherits';
 export {default as inrange} from './src/inrange';
 export {default as isArray} from './src/isArray';
 export {default as isBoolean} from './src/isBoolean';
 export {default as isDate} from './src/isDate';
 export {default as isFunction} from './src/isFunction';
+export {default as isIterable} from './src/isIterable';
 export {default as isNumber} from './src/isNumber';
 export {default as isObject} from './src/isObject';
 export {default as isRegExp} from './src/isRegExp';
 export {default as isString} from './src/isString';
 export {default as key} from './src/key';
 export {default as lerp} from './src/lerp';
+export {default as lruCache} from './src/lruCache';
 export {default as merge} from './src/merge';
 export {default as pad} from './src/pad';
 export {default as peek} from './src/peek';

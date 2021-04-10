@@ -1,9 +1,7 @@
-import { stringType } from './util';
+import { stringOrSignal } from './util';
 
-const background = stringType;
+const background = stringOrSignal;
 
 export default {
-  defs: {
-    background
-  }
+  background
 };

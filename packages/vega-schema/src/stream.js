@@ -1,10 +1,10 @@
 import {
-  array, allOf, def, oneOf, object, ref,
-  booleanType, numberType, stringType
+  allOf, array, booleanType, def, numberType, object,
+  oneOf, stringType
 } from './util';
 
 // types defined elsewhere
-const exprStringRef = ref('exprString');
+const exprStringRef = def('exprString');
 
 const streamRef = def('stream');
 
@@ -33,7 +33,5 @@ const stream = allOf(
 );
 
 export default {
-  defs: {
-    stream
-  }
+  stream
 };

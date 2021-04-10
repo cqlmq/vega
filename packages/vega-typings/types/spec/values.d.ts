@@ -1,3 +1,5 @@
+import { Color } from './color';
+import { StrokeCap } from './config';
 import {
   Align,
   AlignValueRef,
@@ -13,6 +15,7 @@ import {
   Orient,
   OrientValueRef,
   StringValueRef,
+  StrokeCapValueRef,
   SymbolShape,
   SymbolShapeValueRef,
   TextBaseline,
@@ -28,9 +31,11 @@ export type FontStyleValue = FontStyle | FontStyleValueRef;
 
 export type StringValue = string | StringValueRef;
 
-export type ColorValue = null | string | ColorValueRef;
+export type ColorValue = null | Color | ColorValueRef;
 
 export type AlignValue = Align | AlignValueRef;
+
+export type StrokeCapValue = StrokeCap | StrokeCapValueRef;
 
 export type TextBaselineValue = TextBaseline | TextBaselineValueRef;
 

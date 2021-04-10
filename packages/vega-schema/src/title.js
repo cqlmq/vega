@@ -1,51 +1,81 @@
 import {
-  numberValue, stringValue, stringOrSignal, anchorValue,
-  alignValue, baselineValue, colorValue, fontWeightValue,
-  def, enums, object, oneOf, pattern, ref,
-  booleanType, numberType, stringType, orSignal
+  alignValue, anchorValue, anyOf,
+  baselineValue, booleanType,
+  colorValue, def, enums, fontWeightValue,
+  numberOrSignal, numberType, numberValue,
+  object, oneOf, orSignal, pattern,
+  stringType, stringValue, textOrSignal
 } from './util';
 
 // types defined elsewhere
+const guideEncodeRef = def('guideEncode');
 const encodeEntryRef = def('encodeEntry');
-const stringValueRef = ref('stringValue');
-const styleRef = ref('style');
+const stringValueRef = def('stringValue');
+const styleRef = def('style');
 
 const titleOrientEnum = ['none', 'left', 'right', 'top', 'bottom'];
 const titleFrameEnum = ['group', 'bounds'];
 
 const titleEncode = pattern({
-  '^(?!interactive|name|style).+$': encodeEntryRef,
+  '^(?!interactive|name|style).+$': encodeEntryRef
 });
 
 const title = oneOf(
   stringType,
   object({
-    name: stringType,
     orient: orSignal(enums(titleOrientEnum, {default: 'top'})),
     anchor: anchorValue,
     frame: oneOf(enums(titleFrameEnum), stringValueRef),
     offset: numberValue,
-    style: styleRef,
-    text: stringOrSignal,
+
+    // ARIA CONFIG
+    aria: booleanType,
+
+    // SHARED TEXT CONFIG
+    limit: numberValue,
     zindex: numberType,
-    interactive: booleanType,
     align: alignValue,
     angle: numberValue,
     baseline: baselineValue,
-    color: colorValue,
     dx: numberValue,
     dy: numberValue,
+
+    // TITLE TEXT CONFIG
+    text: textOrSignal,
+    color: colorValue,
     font: stringValue,
     fontSize: numberValue,
     fontStyle: stringValue,
     fontWeight: fontWeightValue,
-    limit: numberValue,
-    encode: titleEncode
+    lineHeight: numberValue,
+
+    // SUBTITLE TEXT CONFIG
+    subtitle: textOrSignal,
+    subtitleColor: colorValue,
+    subtitleFont: stringValue,
+    subtitleFontSize: numberValue,
+    subtitleFontStyle: stringValue,
+    subtitleFontWeight: fontWeightValue,
+    subtitleLineHeight: numberValue,
+    subtitlePadding: numberOrSignal,
+
+    // CUSTOM ENCODERS
+    encode: anyOf(
+      titleEncode, // deprecated! (v5.7.0)
+      object({
+        group: guideEncodeRef,
+        title: guideEncodeRef,
+        subtitle: guideEncodeRef
+      })
+    ),
+
+    // deprecated! (v5.7.0)
+    name: stringType,
+    interactive: booleanType,
+    style: styleRef
   })
 );
 
 export default {
-  defs: {
-    title
-  }
+  title
 };

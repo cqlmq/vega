@@ -1,6 +1,5 @@
 import { Spec } from 'vega';
 
-// https://vega.github.io/editor/#/examples/vega/bar-chart
 export const spec: Spec = {
   "$schema": "https://vega.github.io/schema/vega/v5.json",
   "width": 200,
@@ -87,7 +86,8 @@ export const spec: Spec = {
               "y": {"expr": "scale('y', datum.Miles_per_Gallon)"},
               "size": [{"signal": "width"}, {"signal": "height"}],
               "count": {"signal": "count"},
-              "nice": {"signal": "nice"}
+              "nice": {"signal": "nice"},
+              "bandwidth": 20
             }
           ]
         }

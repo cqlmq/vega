@@ -7,23 +7,23 @@ function regexEqual(x, y) {
     (x.ignoreCase === y.ignoreCase) && (x.multiline === y.multiline);
 }
 
-tape('Evaluate expressions without white or black list', function(t) {
+tape('Evaluate expressions without white or black list', t => {
   var codegen = vega.codegen({
     globalvar: 'global'
   });
 
   function evaluate(str) {
-    var value = codegen(vega.parse(str));
-    var fn = Function('"use strict"; return (' + value.code + ')');
+    const value = codegen(vega.parse(str));
+    const fn = Function('"use strict"; return (' + value.code + ')');
     return fn();
   }
 
   evaluate.fn = function(str) {
-    return function() { return evaluate(str); }
+    return function() { return evaluate(str); };
   };
 
   // should access globals object
-  var unicode = 'd\u00A9';
+  const unicode = 'd\u00A9';
   global._val_ = 5;
   global[unicode] = 3.14;
   t.equal(evaluate('global._val_+1'), 6);
@@ -36,62 +36,61 @@ tape('Evaluate expressions without white or black list', function(t) {
   t.equal(value.code, 'd');
 
   // should not allow unknown ast node type
-  t.throws(function() { codegen({}); });
-  t.throws(function() { codegen({type: 'foo'}); });
+  t.throws(() => { codegen({}); });
+  t.throws(() => { codegen({type: 'foo'}); });
 
   t.end();
 });
 
-tape('Evaluate expressions with black list', function(t) {
+tape('Evaluate expressions with black list', t => {
   var codegen = vega.codegen({
-    blacklist: ['a', 'b', 'c'],
+    forbidden: ['a', 'b', 'c'],
     globalvar: 'global',
     fieldvar:  'd'
   });
 
   function evaluate(str) {
-    var d = {a: 2, föö: 5};
-    var value = codegen(vega.parse(str));
-    var fn = Function('d', '"use strict";return(' + value.code + ')');
+    const d = {a: 2, föö: 5};
+    const value = codegen(vega.parse(str));
+    const fn = Function('d', '"use strict";return(' + value.code + ')');
     return fn(d);
   }
 
   evaluate.fn = function(str) {
-    return function() { return evaluate(str); }
+    return function() { return evaluate(str); };
   };
 
-  // should not allow blacklisted ids
+  // should not allow forbidden ids
   t.throws(evaluate.fn('a'));
   t.throws(evaluate.fn('b'));
   t.throws(evaluate.fn('c'));
 
-  // should allow non-blacklisted ids
+  // should allow non-forbidden ids
   t.doesNotThrow(evaluate.fn('d'));
   t.doesNotThrow(evaluate.fn('global'));
-  t.doesNotThrow(evaluate.fn('this'));
 
   t.end();
 });
 
-tape('Evaluate expressions with white list', function(t) {
+tape('Evaluate expressions with white list', t => {
   var codegen = vega.codegen({
-    whitelist: ['datum', 'event', 'signals'],
+    allowed: ['datum', 'event', 'signals'],
     globalvar: 'global'
   });
 
   function evaluate(str) {
-    var datum = {a: 2, föö: 5};
-    var evt = {type: 'mousemove'};
-    var value = codegen(vega.parse(str));
+    const datum = {a: 2, föö: 5};
+    const evt = {type: 'mousemove'};
+    const value = codegen(vega.parse(str));
     if (value.globals.length > 0) {
-      throw Error('Found non-whitelisted global identifier.');
+      throw Error('Found non-allowed global identifier.');
     }
-    var fn = Function('datum', 'event', 'signals', 'return (' + value.code + ')');
+    const fn = Function('datum', 'event', 'signals', 'return (' + value.code + ')');
     return fn(datum, evt);
   }
 
   evaluate.fn = function(str) {
-    return function() { return evaluate(str); }
+    return function() { return evaluate(str); };
   };
 
   // Simple evaluation
@@ -166,9 +165,12 @@ tape('Evaluate expressions with white list', function(t) {
 
   // Function evaluation
   // should eval math functions', function() {
-  t.equal(evaluate('isNaN(1/0)'), isNaN(1/0));
-  t.equal(evaluate('isFinite(1)'), isFinite(1));
-  t.equal(evaluate('isFinite(1/0)'), isFinite(1/0));
+  t.equal(evaluate('isNaN(1/0)'), Number.isNaN(1/0));
+  t.equal(evaluate('isNaN("1")'), Number.isNaN('1'));
+  t.equal(evaluate('isFinite(1)'), Number.isFinite(1));
+  t.equal(evaluate('isFinite(1/0)'), Number.isFinite(1/0));
+  t.equal(evaluate('isFinite(null)'), Number.isFinite(null));
+  t.equal(evaluate('isFinite("0")'), Number.isFinite('0'));
   t.equal(evaluate('abs(-3)'), Math.abs(-3));
   t.equal(evaluate('acos(1)'), Math.acos(1));
   t.equal(evaluate('asin(1)'), Math.asin(1));
@@ -186,8 +188,8 @@ tape('Evaluate expressions with white list', function(t) {
   t.equal(evaluate('sin(1)'), Math.sin(1));
   t.equal(evaluate('sqrt(2)'), Math.sqrt(2));
   t.equal(evaluate('tan(1)'), Math.tan(1));
-  for (var i=0; i<5; ++i) {
-    var r = evaluate('random()');
+  for (let i=0; i<5; ++i) {
+    const r = evaluate('random()');
     t.equal(r >= 0 && r <= 1, true);
   }
 
@@ -200,30 +202,16 @@ tape('Evaluate expressions with white list', function(t) {
 
   // should eval array functions
   t.deepEqual(evaluate('length([1, 2, 3])'), [1, 2, 3].length);
-  t.deepEqual(evaluate('join([1, 2, 3])'), [1, 2, 3].join());
-  t.deepEqual(evaluate('join([1, 2, 3], ", ")'), [1, 2, 3].join(', '));
-  t.deepEqual(evaluate('indexof([1, 2, 2, 3], 2)'), [1, 2, 2, 3].indexOf(2));
-  t.deepEqual(evaluate('lastindexof([1, 2, 2, 3], 2)'), [1, 2, 2, 3].lastIndexOf(2));
-  t.deepEqual(evaluate('reverse([1, 2, 3])'), [1, 2, 3].reverse());
-  t.deepEqual(evaluate('slice([1, 2, 3], 1)'), [1, 2, 3].slice(1));
-  t.deepEqual(evaluate('slice([1, 2, 3], -1)'), [1, 2, 3].slice(-1));
-  t.deepEqual(evaluate('slice([1, 2, 3], 1, -1)'), [1, 2, 3].slice(1, -1));
 
   // should eval string functions
   t.equal(evaluate('length("123")'), '123'.length);
   t.equal(evaluate('upper("abc")'), 'abc'.toUpperCase());
   t.equal(evaluate('lower("abc")'), 'abc'.toLowerCase());
-  t.equal(evaluate('slice("123",1)'), '123'.slice(1));
-  t.equal(evaluate('slice("123",-1)'), '123'.slice(-1));
-  t.equal(evaluate('slice("123",0,1)'), '123'.slice(0,1));
   t.deepEqual(evaluate('split("1 2 3"," ")'), '1 2 3'.split(' '));
   t.equal(evaluate('substring("123",0,1)'), '123'.substring(0,1));
   t.equal(evaluate('trim(" 123 ")'), ' 123 '.trim());
   t.equal(evaluate('parseFloat("3.14")'), parseFloat('3.14'));
   t.equal(evaluate('parseInt("42")'),parseInt('42'));
-  t.equal(evaluate('indexof("hello world", "l")'), 2);
-  t.equal(evaluate('lastindexof("hello world", "l")'), 9);
-  t.equal(evaluate('replace("hello world", /hello/, "goodbye")'), 'goodbye world');
 
   // should eval regular expression functions
   t.equal(evaluate('test(/ain/, "spain")'), /ain/.test('spain'));
@@ -254,7 +242,7 @@ tape('Evaluate expressions with white list', function(t) {
   t.equal(evaluate('utcseconds(datetime(2001,1,1))'), d.getUTCSeconds());
   t.equal(evaluate('utcmilliseconds(datetime(2001,1,1))'), d.getUTCMilliseconds());
 
-  for (var date=1; date<=7; ++date) {
+  for (let date=1; date<=7; ++date) {
     d = new Date(2001, 1, date);
     t.equal(evaluate('date(datetime(2001,1,'+date+'))'), d.getDate());
     t.equal(evaluate('utcdate(datetime(2001,1,'+date+'))'), d.getUTCDate());
@@ -285,7 +273,7 @@ tape('Evaluate expressions with white list', function(t) {
   t.throws(evaluate.fn('Math.random()'));
   t.throws(evaluate.fn('Array.prototype.slice.call([])'));
 
-  // should not allow top-level identifiers outside whitelist
+  // should not allow top-level identifiers outside allowed list
   t.throws(evaluate.fn('Math'));
   t.throws(evaluate.fn('Array'));
   t.throws(evaluate.fn('String'));
@@ -294,7 +282,7 @@ tape('Evaluate expressions with white list', function(t) {
   t.throws(evaluate.fn('a'));
   t.throws(evaluate.fn('datum[Math]'));
 
-  // should allow nested identifiers outside whitelist
+  // should allow nested identifiers outside allowed list
   t.doesNotThrow(evaluate.fn('datum.eval'));
   t.doesNotThrow(evaluate.fn('datum.Math'));
   t.doesNotThrow(evaluate.fn('datum.a.eval'));

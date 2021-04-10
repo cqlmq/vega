@@ -1,11 +1,11 @@
 import eventExtend from './events-extend';
 import {EventStream} from 'vega-dataflow';
-import {extend, isArray, toSet} from 'vega-util';
+import {array, extend, isArray, isObject, toSet} from 'vega-util';
 
-var VIEW = 'view',
-    TIMER = 'timer',
-    WINDOW = 'window',
-    NO_TRAP = {trap: false};
+const VIEW = 'view',
+      TIMER = 'timer',
+      WINDOW = 'window',
+      NO_TRAP = {trap: false};
 
 /**
  * Initialize event handling configuration.
@@ -13,31 +13,49 @@ var VIEW = 'view',
  * @return {object}
  */
 export function initializeEventConfig(config) {
-  config = extend({}, config);
+  const events = extend({defaults: {}}, config);
 
-  var def = config.defaults;
-  if (def) {
-    if (isArray(def.prevent)) {
-      def.prevent = toSet(def.prevent);
-    }
-    if (isArray(def.allow)) {
-      def.allow = toSet(def.allow);
-    }
-  }
+  const unpack = (obj, keys) => {
+    keys.forEach(k => {
+      if (isArray(obj[k])) obj[k] = toSet(obj[k]);
+    });
+  };
 
-  return config;
+  unpack(events.defaults, ['prevent', 'allow']);
+  unpack(events, ['view', 'window', 'selector']);
+
+  return events;
+}
+
+export function trackEventListener(view, sources, type, handler) {
+  view._eventListeners.push({
+    type: type,
+    sources: array(sources),
+    handler: handler
+  });
 }
 
 function prevent(view, type) {
   var def = view._eventConfig.defaults,
-      prevent = def && def.prevent,
-      allow = def && def.allow;
+      prevent = def.prevent,
+      allow = def.allow;
 
   return prevent === false || allow === true ? false
     : prevent === true || allow === false ? true
     : prevent ? prevent[type]
     : allow ? !allow[type]
     : view.preventDefault();
+}
+
+function permit(view, key, type) {
+  const rule = view._eventConfig && view._eventConfig[key];
+
+  if (rule === false || (isObject(rule) && !rule[type])) {
+    view.warn(`Blocked ${key} ${type} event listener.`);
+    return false;
+  }
+
+  return true;
 }
 
 /**
@@ -61,19 +79,27 @@ export function events(source, type, filter) {
       sources;
 
   if (source === TIMER) {
-    view.timer(send, type);
+    if (permit(view, 'timer', type)) {
+      view.timer(send, type);
+    }
   }
 
   else if (source === VIEW) {
-    // send traps errors, so use {trap: false} option
-    view.addEventListener(type, send, NO_TRAP);
+    if (permit(view, 'view', type)) {
+      // send traps errors, so use {trap: false} option
+      view.addEventListener(type, send, NO_TRAP);
+    }
   }
 
   else {
     if (source === WINDOW) {
-      if (typeof window !== 'undefined') sources = [window];
+      if (permit(view, 'window', type) && typeof window !== 'undefined') {
+        sources = [window];
+      }
     } else if (typeof document !== 'undefined') {
-      sources = document.querySelectorAll(source);
+      if (permit(view, 'selector', type)) {
+        sources = document.querySelectorAll(source);
+      }
     }
 
     if (!sources) {
@@ -82,12 +108,7 @@ export function events(source, type, filter) {
       for (var i=0, n=sources.length; i<n; ++i) {
         sources[i].addEventListener(type, send);
       }
-
-      view._eventListeners.push({
-        type:    type,
-        sources: sources,
-        handler: send
-      });
+      trackEventListener(view, sources, type, send);
     }
   }
 

@@ -1,7 +1,7 @@
 import {
-  enums, object, oneOf, orSignal,
-  booleanType, nullType, numberType, signalRef,
-  booleanOrSignal, numberOrSignal
+  booleanOrSignal, booleanType, enums, nullType,
+  numberOrSignal, numberType, object, oneOf,
+  orSignal, signalRef
 } from './util';
 
 const layoutAlignEnum = ['all', 'each', 'none'];
@@ -65,7 +65,5 @@ const layout = orSignal(object({
 }));
 
 export default {
-  defs: {
-    layout
-  }
+  layout
 };

@@ -1,10 +1,11 @@
 import error from './error';
 
 export default function(p) {
-  var path = [],
-      q = null,
+  const path = [],
+        n = p.length;
+
+  let q = null,
       b = 0,
-      n = p.length,
       s = '',
       i, j, c;
 
@@ -20,7 +21,8 @@ export default function(p) {
     c = p[j];
     if (c === '\\') {
       s += p.substring(i, j);
-      i = ++j;
+      s += p.substring(++j, ++j);
+      i = j;
     } else if (c === q) {
       push();
       q = null;

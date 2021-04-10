@@ -1,6 +1,5 @@
 import { Spec } from 'vega';
 
-// https://vega.github.io/editor/#/examples/vega/bar-chart
 export const spec: Spec = {
   "$schema": "https://vega.github.io/schema/vega/v5.json",
   "width": 250,
@@ -53,9 +52,7 @@ export const spec: Spec = {
       "grid": true,
       "domain": false,
       "zindex": 1,
-      "encode": {
-        "grid": {"enter": {"stroke": {"value": "white"}}}
-      }
+      "gridColor": "white"
     }
   ],
 

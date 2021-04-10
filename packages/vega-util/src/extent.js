@@ -3,12 +3,12 @@
  * form [min, max]. Ignores null, undefined, and NaN values.
  */
 export default function(array, f) {
-  var i = 0, n, v, min, max;
+  let i = 0, n, v, min, max;
 
   if (array && (n = array.length)) {
     if (f == null) {
       // find first valid value
-      for (v = array[i]; v == null || v !== v; v = array[++i]);
+      for (v = array[i]; i < n && (v == null || v !== v); v = array[++i]);
       min = max = v;
 
       // visit all other values
@@ -22,7 +22,7 @@ export default function(array, f) {
       }
     } else {
       // find first valid value
-      for (v = f(array[i]); v == null || v !== v; v = f(array[++i]));
+      for (v = f(array[i]); i < n && (v == null || v !== v); v = f(array[++i]));
       min = max = v;
 
       // visit all other values

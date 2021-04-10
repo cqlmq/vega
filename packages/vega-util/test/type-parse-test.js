@@ -1,7 +1,7 @@
 var tape = require('tape'),
     vega = require('../');
 
-tape('toBoolean parses booleans', function(t) {
+tape('toBoolean parses booleans', t => {
   t.equal(vega.toBoolean(null), null);
   t.equal(vega.toBoolean(undefined), null);
   t.equal(vega.toBoolean(''), null);
@@ -17,7 +17,7 @@ tape('toBoolean parses booleans', function(t) {
   t.end();
 });
 
-tape('toDate parses dates', function(t) {
+tape('toDate parses dates', t => {
   var now = Date.now(),
       d = new Date(now);
 
@@ -25,17 +25,17 @@ tape('toDate parses dates', function(t) {
   t.equal(vega.toDate(undefined), null);
   t.equal(vega.toDate(''), null);
   t.equal(vega.toDate('1/1/2000'), Date.parse('1/1/2000'));
-  t.ok(isNaN(vega.toDate('foo')));
+  t.ok(Number.isNaN(vega.toDate('foo')));
   t.equal(vega.toDate(0), 0);
   t.equal(vega.toDate(1), 1);
   t.equal(vega.toDate(now), now);
   t.equal(vega.toDate(d), d);
-  t.ok(isNaN(vega.toDate(true)));
-  t.ok(isNaN(vega.toDate(false)));
+  t.ok(Number.isNaN(vega.toDate(true)));
+  t.ok(Number.isNaN(vega.toDate(false)));
   t.end();
 });
 
-tape('toDate parses dates with custom parser', function(t) {
+tape('toDate parses dates with custom parser', t => {
   function parser(_) {
     return _ === 'epoch' ? 0 : NaN;
   }
@@ -43,22 +43,22 @@ tape('toDate parses dates with custom parser', function(t) {
   t.equal(vega.toDate(null, parser), null);
   t.equal(vega.toDate(undefined, parser), null);
   t.equal(vega.toDate('', parser), null);
-  t.ok(isNaN(vega.toDate('1/1/2000', parser)));
-  t.ok(isNaN(vega.toDate('foo', parser)));
-  t.ok(isNaN(vega.toDate(Date.now(), parser)));
-  t.ok(isNaN(vega.toDate(new Date(), parser)));
+  t.ok(Number.isNaN(vega.toDate('1/1/2000', parser)));
+  t.ok(Number.isNaN(vega.toDate('foo', parser)));
+  t.ok(Number.isNaN(vega.toDate(Date.now(), parser)));
+  t.ok(Number.isNaN(vega.toDate(new Date(), parser)));
   t.equal(vega.toDate('epoch', parser), 0);
   t.end();
 });
 
-tape('toNumber parses numbers', function(t) {
+tape('toNumber parses numbers', t => {
   t.equal(vega.toNumber(null), null);
   t.equal(vega.toNumber(undefined), null);
   t.equal(vega.toNumber(''), null);
   t.equal(vega.toNumber('0'), 0);
   t.equal(vega.toNumber('1'), 1);
   t.equal(vega.toNumber('1e5'), 1e5);
-  t.ok(isNaN(vega.toNumber('foo')));
+  t.ok(Number.isNaN(vega.toNumber('foo')));
   t.equal(vega.toNumber(0), 0);
   t.equal(vega.toNumber(1), 1);
   t.equal(vega.toNumber(1e5), 1e5);
@@ -67,7 +67,7 @@ tape('toNumber parses numbers', function(t) {
   t.end();
 });
 
-tape('toString parses strings', function(t) {
+tape('toString parses strings', t => {
   t.equal(vega.toString(null), null);
   t.equal(vega.toString(undefined), null);
   t.equal(vega.toString(''), null);

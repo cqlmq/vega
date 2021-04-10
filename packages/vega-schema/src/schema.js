@@ -1,4 +1,4 @@
-import {def, ref, type, numberType, objectType, stringType} from './util';
+import {def, numberOrSignal, objectType, stringType, type} from './util';
 
 import autosize from './autosize';
 import axis from './axis';
@@ -24,37 +24,34 @@ import title from './title';
 import transform from './transform';
 
 function extend(target, source) {
-  for (var key in source) {
+  for (const key in source) {
     target[key] = source[key];
   }
 }
 
 function addModule(schema, module) {
-  if (module.refs) extend(schema.refs, module.refs);
-  if (module.defs) extend(schema.defs, module.defs);
+  extend(schema.definitions, module);
 }
 
 export default function(definitions) {
-  var schema = {
-    $schema: 'http://json-schema.org/draft-06/schema#',
+  const schema = {
+    $schema: 'http://json-schema.org/draft-07/schema#',
     title: 'Vega Visualization Specification Language',
-    defs: {},
-    refs: {},
+    definitions: {},
     type: 'object',
     allOf: [
       def('scope'),
       {
         properties: {
           $schema: type('string', {format: 'uri'}),
-          usermeta: objectType,
           config: objectType,
           description: stringType,
-          width: numberType,
-          height: numberType,
+          width: numberOrSignal,
+          height: numberOrSignal,
           padding: def('padding'),
           autosize: def('autosize'),
           background: def('background'),
-          style: ref('style')
+          style: def('style')
         }
       }
     ]
@@ -83,7 +80,7 @@ export default function(definitions) {
     stream,
     title,
     transform(definitions)
-  ].forEach(function(module) {
+  ].forEach(module => {
     addModule(schema, module);
   });
 

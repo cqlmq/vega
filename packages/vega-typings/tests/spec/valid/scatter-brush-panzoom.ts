@@ -1,6 +1,5 @@
 import { Spec } from 'vega';
 
-// https://vega.github.io/editor/#/examples/vega/bar-chart
 export const spec: Spec = {
   "$schema": "https://vega.github.io/schema/vega/v5.json",
   "description": "Drag out a rectangular brush to highlight points.",
@@ -12,7 +11,17 @@ export const spec: Spec = {
   "data": [
     {"name": "brush_store"},
     {"name": "grid_store"},
-    {"name": "source_0", "url": "data/cars.json", "format": {"type": "json"}}
+    {
+      "name": "source_0",
+      "url": "data/cars.json",
+      "format": {"type": "json"},
+      "transform": [
+        {
+          "type": "filter",
+          "expr": "datum[\"Horsepower\"] != null && isFinite(datum[\"Horsepower\"]) && datum[\"Miles_per_Gallon\"] != null && isFinite(datum[\"Miles_per_Gallon\"])"
+        }
+      ]
+    }
   ],
   "signals": [
     {
@@ -420,18 +429,8 @@ export const spec: Spec = {
       "encode": {
         "update": {
           "opacity": {"value": 0.7},
-          "fill": [
-            {
-              "test": "datum[\"Horsepower\"] === null || isNaN(datum[\"Horsepower\"]) || datum[\"Miles_per_Gallon\"] === null || isNaN(datum[\"Miles_per_Gallon\"])",
-              "value": null
-            },
-            {"value": "transparent"}
-          ],
+          "fill": {"value": "transparent"},
           "stroke": [
-            {
-              "test": "datum[\"Horsepower\"] === null || isNaN(datum[\"Horsepower\"]) || datum[\"Miles_per_Gallon\"] === null || isNaN(datum[\"Miles_per_Gallon\"])",
-              "value": null
-            },
             {
               "test": "!(length(data(\"brush_store\"))) || (vlSelectionTest(\"brush_store\", datum, \"union\"))",
               "scale": "color",

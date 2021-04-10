@@ -1,6 +1,5 @@
 import { Spec } from 'vega';
 
-// https://vega.github.io/editor/#/examples/vega/bar-chart
 export const spec: Spec = {
   "$schema": "https://vega.github.io/schema/vega/v5.json",
   "width": 800,
@@ -23,7 +22,7 @@ export const spec: Spec = {
   "data": [
     {
       "name": "temperature",
-      "url": "data/seattle-temps.csv",
+      "url": "data/seattle-weather-hourly-normals.csv",
       "format": {"type": "csv", "parse": {"temp": "number", "date": "date"}},
       "transform": [
         {"type": "formula", "as": "hour", "expr": "hours(datum.date)"},
@@ -52,7 +51,7 @@ export const spec: Spec = {
     {
       "name": "y",
       "type": "linear", "zero": false,
-      "domain": {"data": "temperature", "field": "temp"},
+      "domain": {"data": "temperature", "field": "temperature"},
       "range": [{"signal": "rangeStep"}, 1]
     }
   ],
@@ -97,7 +96,7 @@ export const spec: Spec = {
           "encode": {
             "enter": {
               "x": {"scale": "x", "field": "date"},
-              "y": {"scale": "y", "field": "temp"},
+              "y": {"scale": "y", "field": "temperature"},
               "y2": {"signal": "rangeStep"}
             }
           }

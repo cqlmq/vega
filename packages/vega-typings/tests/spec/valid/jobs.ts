@@ -1,6 +1,5 @@
 import { Spec } from 'vega';
 
-// https://vega.github.io/editor/#/examples/vega/bar-chart
 export const spec: Spec = {
   "$schema": "https://vega.github.io/schema/vega/v5.json",
   "width": 800,
@@ -117,10 +116,8 @@ export const spec: Spec = {
     {
       "orient": "right", "scale": "y", "format": "%",
       "grid": true, "domain": false, "tickSize": 12,
-      "encode": {
-        "grid": {"enter": {"stroke": {"value": "#ccc"}}},
-        "ticks": {"enter": {"stroke": {"value": "#ccc"}}}
-      }
+      "gridColor": "#ccc",
+      "tickColor": "#ccc"
     }
   ],
 

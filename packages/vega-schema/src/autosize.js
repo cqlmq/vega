@@ -1,4 +1,4 @@
-import {enums, object, oneOf, booleanType} from './util';
+import {booleanType, enums, object, oneOf, signalRef} from './util';
 
 const autosizeEnum = [
   'pad',
@@ -21,11 +21,10 @@ const autosize = oneOf(
     _type_: autosizeType,
     resize: booleanType,
     contains: enums(containsEnum)
-  })
+  }),
+  signalRef
 );
 
 export default {
-  defs: {
-    autosize
-  }
+  autosize
 };
